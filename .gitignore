@@ -1,3 +1,5 @@
+# Local environment files
+backend/api/.env
 # Dependencies
 node_modules/
 npm-debug.log*

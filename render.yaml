@@ -12,23 +12,21 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: "https://weather-prediction-app-uzu5.onrender.com"
+        value: "https://weather-prediction-app-backend.onrender.com"
 
   - type: web
-    name: weather-backend
+    name: weather-prediction-app-backend
     env: python
     branch: main
     region: oregon
     autoDeploy: true
     plan: free
-    buildCommand: "cd backend/api && python -m pip install --upgrade pip setuptools wheel && python -m pip install -r requirements.txt"
-    startCommand: "gunicorn backend.api.app:app -b 0.0.0.0:$PORT"
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    startCommand: "bash start.sh"
     envVars:
       - key: PORT
-        value: "5000"
+        value: "10000"
       - key: FLASK_ENV
         value: production
-      - key: RAILWAY_ENVIRONMENT
-        value: "false"
       - key: FRONTEND_URL
-        value: "https://weather-prediction-app-uzu5.onrender.com"
+        value: "https://weather-prediction-app.onrender.com"
