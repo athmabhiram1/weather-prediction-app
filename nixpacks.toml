@@ -4,16 +4,15 @@ aptPkgs = ['python3-dev', 'gcc', 'g++']
 
 [phases.install]
 cmds = [
-  'cd backend/api',
   'pip install --upgrade pip',
-  'pip install -r requirements.txt'
+  'pip install -r backend/api/requirements.txt'
 ]
 
 [phases.build]
 cmds = ['echo "Build phase completed successfully"']
 
 [start]
-cmd = 'cd backend/api && gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 app:app'
+cmd = 'gunicorn --chdir backend/api --bind 0.0.0.0:$PORT --workers 1 --timeout 120 app:app'
 
 [variables]
 PYTHONPATH = '/app/backend'

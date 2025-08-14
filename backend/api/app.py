@@ -18,7 +18,13 @@ warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 load_dotenv()
 
 # Add the parent directory to Python path for relative imports
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(os.path.dirname(current_dir))
+sys.path.append(parent_dir)
+sys.path.append(os.path.dirname(current_dir))
+
+# Also add the current directory to handle relative imports
+sys.path.append(current_dir)
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -36,7 +42,7 @@ app.config['OPENWEATHER_API_KEY'] = os.getenv('OPENWEATHER_API_KEY', app.config.
 # More flexible CORS configuration - consider using environment variables for origins
 CORS(app, resources={
     r"/*": {
-        "origins": os.getenv('ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000').split(',')
+        "origins": os.getenv('ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000,https://*.vercel.app').split(',')
     }
 })
 

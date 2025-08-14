@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Weather prediction backend API",
   "scripts": {
-    "start": "cd backend/api && python app.py"
+    "start": "gunicorn --chdir backend/api --bind 0.0.0.0:$PORT --workers 1 --timeout 120 app:app"
   },
   "engines": {
     "node": ">=18.0.0"
