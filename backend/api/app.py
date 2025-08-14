@@ -39,14 +39,23 @@ app.config.from_object(Config)
 app.config['OPENWEATHER_API_KEY'] = os.getenv('OPENWEATHER_API_KEY', app.config.get('OPENWEATHER_API_KEY'))
 
 # Enable CORS for frontend integration
+# Allow origins to be extended via FRONTEND_URL environment variable (useful on Render)
+frontend_url = os.getenv('FRONTEND_URL')
+default_origins = [
+    "http://localhost:3000",
+    "https://your-vercel-app.vercel.app",
+    "https://weatherai-yourusername.vercel.app",
+    "https://web-production-6d3e.up.railway.app"
+]
+if frontend_url:
+    # ensure no duplicate and strip trailing slash
+    frontend_url = frontend_url.rstrip('/')
+    if frontend_url not in default_origins:
+        default_origins.append(frontend_url)
+
 CORS(app, resources={
     r"/*": {
-        "origins": [
-            "http://localhost:3000",
-            "https://your-vercel-app.vercel.app",
-            "https://weatherai-yourusername.vercel.app",
-            "https://web-production-6d3e.up.railway.app"
-        ]
+        "origins": default_origins
     }
 })
 
