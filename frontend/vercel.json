@@ -1,23 +1,12 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/.next",
+  "installCommand": "npm install && cd frontend && npm install",
+  "framework": "nextjs",
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "https://web-production-6d3e.up.railway.app/$1",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/api/(.*)",
+      "destination": "https://weather-prediction-app-production.up.railway.app/api/$1"
     }
   ]
 }

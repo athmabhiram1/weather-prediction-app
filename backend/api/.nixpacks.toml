@@ -1,0 +1,14 @@
+[phases.setup]
+nixPkgs = ["python312", "python312Packages.pip"]
+
+[phases.install]
+cmds = [
+  "pip install --upgrade pip setuptools wheel",
+  "pip install -r backend/api/requirements.txt"
+]
+
+[phases.build]
+cmds = ["echo 'Build complete'"]
+
+[start]
+cmd = "cd backend/api && gunicorn app:app --bind 0.0.0.0:5000"

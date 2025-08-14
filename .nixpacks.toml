@@ -14,4 +14,4 @@ cmds = ["echo 'Backend build complete'"]
 cmd = "cd backend/api && gunicorn app:app --bind 0.0.0.0:$PORT"
 
 [variables]
-NIXPACKS_NO_INSTALL_PHASE = "1"
+PORT = "5000"

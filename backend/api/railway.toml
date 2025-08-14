@@ -1,4 +1,4 @@
 [build]
 builder = "nixpacks"
 buildCommand = "cd backend/api && pip install -r requirements.txt"
-startCommand = "cd backend/api && gunicorn app:app -b 0.0.0.0:$PORT"
+startCommand = "cd backend/api && gunicorn app:app -b 0.0.0.0:5000"
