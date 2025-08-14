@@ -2,3 +2,7 @@
 builder = "nixpacks"
 buildCommand = "cd backend/api && pip install -r requirements.txt"
 startCommand = "cd backend/api && gunicorn app:app -b 0.0.0.0:$PORT"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
