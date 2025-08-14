@@ -1,55 +1,73 @@
 # nixpacks.toml
 
-# Use an environment variable to specify the Python version for Nixpacks
+# --- Variables ---
 [variables]
-NIXPACKS_PYTHON_VERSION = "3.12" # Or "3.11" if preferred
+# Specify the Python version for Nixpacks to use
+NIXPACKS_PYTHON_VERSION = "3.12"
+# Note: Setting NIXPACKS_PYTHON_VERSION might be redundant if you explicitly list
+# python312 in nixPkgs, but it's good practice.
 
 # --- Phases ---
 
-# 1. Setup Phase: Install Python and core packages using Nix
+# 1. Setup Phase: Install Python and required libraries using Nix
 [phases.setup]
-# List Nix packages. NIXPACKS_PYTHON_VERSION determines the base Python version.
-# We list the specific Python packages needed, matching your requirements.txt.
-# Nix will manage these packages declaratively.
+# List of Nix packages to install.
+# These are installed declaratively by Nix, avoiding pip/ensurepip issues.
+# IMPORTANT: Use CORRECT Nix package names (often with hyphens, not underscores).
 nixPkgs = [
-    # Base Python installation (picked by NIXPACKS_PYTHON_VERSION)
-    # Core Python packages usually come with the base install
-    # Specific libraries from requirements.txt, translated to Nix package names
-    "python312",
-    "python312Packages.flask",
-    "python312Packages.flask_cors",
-    "python312Packages.requests",
-    "python312Packages.numpy",
-    "python312Packages.pandas",
-    "python312Packages.scikitlearn", 
-    "python312Packages.xgboost",
-    "python312Packages.joblib",
-    "python312Packages.gunicorn"
-    # Add any other specific packages from requirements.txt if they have Nix equivalents
+  # Base Python interpreter (version determined by NIXPACKS_PYTHON_VERSION or explicitly by python312)
+  "python312",
+
+  # Flask Web Framework
+  "python312Packages.flask",
+
+  # Flask-CORS (Note the hyphen: flask-cors)
+  # This is the source of the previous error.
+  "python312Packages.flask-cors",
+
+  # WSGI HTTP Server (for production deployment)
+  "python312Packages.gunicorn",
+
+  # HTTP library
+  "python312Packages.requests",
+
+  # Data manipulation libraries
+  "python312Packages.numpy",
+  "python312Packages.pandas",
+
+  # Machine Learning libraries
+  "python312Packages.scikit-learn", # Note the hyphen
+  "python312Packages.xgboost",
+
+  # Utilities
+  "python312Packages.joblib", # For loading .gz files
+
+  # --- Optional: Build Tools ---
+  # Sometimes needed for compiling certain packages.
+  # "pkg-config",
+  # "gcc",
 ]
+# Explanation:
+# - python312Packages.flask-cors (correct)
+# - python312Packages.scikit-learn (correct)
+# If you add more packages from requirements.txt, ensure you find their correct Nix names.
+# You can often search Nixpkgs documentation or use `nix search nixpkgs <term>` locally.
 
 # 2. Install Phase: Skip traditional pip install
-# Because we are using Nix packages, the dependencies are already installed
-# by the setup phase. We don't need (and shouldn't use) pip here.
+# Nix handles installation, so we don't run pip commands here.
 [phases.install]
-# cmds = [] # Intentionally left empty
+cmds = []
+# Explanation:
+# Running pip install here often fails in Nix environments due to the immutable /nix/store.
+# Dependencies should be declared in [phases.setup].nixPkgs.
+# If you have *non-Nix* packages, handling them is more complex and usually involves
+# Nix expressions (like python.withPackages) which is beyond basic nixpacks.toml.
+# For standard libraries like yours, Nix packages should suffice.
 
 # 3. Build Phase (Optional)
-# If you had specific build steps (e.g., compiling assets), they would go here.
-# For a standard Flask app, this is often not needed.
+# Add any build steps here if needed (e.g., asset compilation).
+# Usually not needed for pure Python/Flask apps.
 # [phases.build]
-# cmds = []
+# cmds = ["echo 'No build steps required'"]
 
-# 4. Start Phase: Define the command to run your application
-[start]
-# Important: 
-# 1. The $PORT variable is provided by Railway.
-# 2. Nixpacks should set up the environment so 'python' and 'gunicorn' are available.
-# 3. We point Gunicorn directly to the WSGI app object.
-# Ensure your directory structure is correct relative to the repo root.
-# If your repo structure is repo_root/backend/api/app.py, 
-# and Railway deploys from repo_root, the path is 'backend.api.app:app'.
-# If Railway is configured with Root Directory 'backend/api', 
-# then the path would be relative to that, e.g., 'app:app'.
-# Let's use the full dotted path from the repo root, which is generally safer.
-cmd = "gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 backend.api.app:app"
+#
