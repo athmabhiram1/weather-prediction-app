@@ -1,8 +1,23 @@
+# This file is the configuration for deploying the monorepo on Railway.
+# It specifies the build and start commands for the services.
+
 [build]
+# Use the Nixpacks builder to build the application.
 builder = "nixpacks"
-buildCommand = "cd backend/api && pip install -r requirements.txt"
-startCommand = "cd backend/api && gunicorn app:app -b 0.0.0.0:$PORT"
+# The build command is not specified here because it is defined in .nixpacks.toml.
+# Nixpacks will automatically use the build commands from the [phases.build] table.
 
 [deploy]
+# The start command for the application. This is also defined in .nixpacks.toml.
+# The command starts the Gunicorn server for the Flask backend.
+startCommand = "gunicorn backend.api.app:app --bind 0.0.0.0:$PORT"
+# The path for the health check endpoint. Railway uses this to determine if the
+# deployment is healthy.
 healthcheckPath = "/health"
-healthcheckTimeout = 30
+# The timeout for the health check in seconds.
+healthcheckTimeout = 100
+# The interval for the health check in seconds.
+healthcheckInterval = 15
+# The number of consecutive successful health checks required to consider the
+# deployment healthy.
+healthcheckRetries = 5

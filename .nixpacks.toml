@@ -1,17 +1,28 @@
+# Monorepo configuration for a Next.js frontend and a Python backend.
+
 [phases.setup]
-nixPkgs = ["python312", "python312Packages.pip"]
+# Install both Python and Node.js from Nix packages.
+nixPkgs = ["python312", "python312Packages.pip", "nodejs_20"]
 
 [phases.install]
+# Install frontend and backend dependencies.
 cmds = [
-  "pip install --upgrade pip setuptools wheel",
-  "cd backend/api && pip install -r requirements.txt"
+  "npm install",
+  "pip install -r backend/api/requirements.txt"
 ]
 
 [phases.build]
-cmds = ["echo 'Backend build complete'"]
+# Placeholder for the build step. Currently, it just echoes a message.
+cmds = ["echo 'Build complete'"]
 
 [start]
+# The start command for the backend service.
 cmd = "cd backend/api && gunicorn app:app --bind 0.0.0.0:$PORT"
 
 [variables]
+# Environment variables for the build and start phases.
 PORT = "5000"
+# The base path for the API, used by the frontend to make requests.
+NEXT_PUBLIC_API_BASE_URL = "/api"
+# The root of the Next.js application.
+NIXPACKS_NEXT_PROJECT_PATH = "frontend"
