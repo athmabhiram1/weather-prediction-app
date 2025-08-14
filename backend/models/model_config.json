@@ -1,0 +1,30 @@
+{
+  "lookback": 14,
+  "target": "temperature_celsius",
+  "models": {
+    "xgboost": {
+      "model_file": "xgb_weather_combined.model",
+      "scalers": [
+        "scaler_X_combined.gz",
+        "scaler_y_combined.gz"
+      ],
+      "features_file": "feature_list_xgb.json",
+      "performance": {
+        "mae": 0.9,
+        "rmse": 0.93
+      }
+    },
+    "lstm": {
+      "model_file": "lstm_weather_enhanced_final.keras",
+      "scalers": [
+        "scaler_X_hist.gz",
+        "scaler_y_hist.gz"
+      ],
+      "features_file": "feature_list_lstm.json",
+      "performance": {
+        "mae": 1.647,
+        "rmse": 1.958
+      }
+    }
+  }
+}
