@@ -44,7 +44,8 @@ CORS(app, resources={
         "origins": [
             "http://localhost:3000",
             "https://your-vercel-app.vercel.app",
-            "https://weatherai-yourusername.vercel.app"
+            "https://weatherai-yourusername.vercel.app",
+            "https://web-production-6d3e.up.railway.app"
         ]
     }
 })

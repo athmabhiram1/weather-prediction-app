@@ -80,7 +80,7 @@ const useWeather = () => {
       const cleanCityName = city.trim();
       
       // Fetch current weather from backend
-      const weatherResponse = await fetch(`http://localhost:5000/current-weather/${encodeURIComponent(cleanCityName)}`);
+      const weatherResponse = await fetch(`https://web-production-6d3e.up.railway.app/current-weather/${encodeURIComponent(cleanCityName)}`);
       
       if (!weatherResponse.ok) {
         const errorData = await weatherResponse.json().catch(() => ({}));
@@ -122,7 +122,7 @@ const useWeather = () => {
       
       // Now make prediction using the real weather data
       try {
-        const predictionResponse = await fetch('http://localhost:5000/predict', {
+        const predictionResponse = await fetch('https://web-production-6d3e.up.railway.app/predict', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
