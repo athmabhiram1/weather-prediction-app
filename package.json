@@ -1,11 +1,9 @@
 {
-  "name": "weather-prediction-monorepo",
+  "name": "weather-prediction-backend",
   "version": "1.0.0",
-  "description": "Weather prediction app with ML capabilities",
+  "description": "Weather prediction backend API",
   "scripts": {
-    "start": "cd backend/api && python app.py",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend/api && python app.py"
+    "start": "cd backend/api && gunicorn --bind 0.0.0.0:$PORT app:app"
   },
   "engines": {
     "node": ">=18.0.0"
