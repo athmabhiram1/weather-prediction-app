@@ -1,0 +1,6 @@
+frontend/
+.git/
+*.md
+*.txt
+!requirements.txt
+!runtime.txt

@@ -1,9 +1,11 @@
 [build]
 builder = "nixpacks"
+buildCommand = "pip install -r requirements.txt"
 
 [deploy]
 startCommand = "python start.py"
-restartPolicyType = "never"
+restartPolicyType = "on-failure"
+restartPolicyMaxRetries = 3
 
 [environments.production]
-variables = { PYTHONPATH = "/app" }
+variables = { PYTHONPATH = "/app", PYTHON_VERSION = "3.12" }

@@ -51,10 +51,10 @@ pids
 # Railway
 .railway/
 
-# Model files (if large)
-*.model
-*.keras
-*.gz
+# Model files (if large) - Allow essential models for deployment
+# *.model
+# *.keras
+# *.gz
 
-# Data files
-*.csv
+# Data files - Allow small essential data
+# *.csv

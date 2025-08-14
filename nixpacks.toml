@@ -1,0 +1,15 @@
+[variables]
+NIXPACKS_PYTHON_VERSION = "3.12"
+NIXPACKS_BUILD_CMD = "pip install -r requirements.txt"
+
+[phases.setup]
+nixPkgs = ["python312", "pip"]
+
+[phases.install]
+cmds = ["pip install --upgrade pip", "pip install -r requirements.txt"]
+
+[phases.build]
+cmds = ["echo 'Build phase complete - Python app ready'"]
+
+[start]
+cmd = "python start.py"
