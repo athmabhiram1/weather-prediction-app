@@ -1,0 +1,9 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "python start.py"
+restartPolicyType = "never"
+
+[environments.production]
+variables = { PYTHONPATH = "/app" }
