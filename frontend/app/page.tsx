@@ -79,8 +79,9 @@ const useWeather = () => {
       // Clean the city name
       const cleanCityName = city.trim();
       
-      // Fetch current weather from backend
-      const weatherResponse = await fetch(`https://web-production-6d3e.up.railway.app/current-weather/${encodeURIComponent(cleanCityName)}`);
+  // Fetch current weather from backend using env-configured base URL
+  const BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000').replace(/\/$/, '');
+  const weatherResponse = await fetch(`${BASE}/current-weather/${encodeURIComponent(cleanCityName)}`);
       
       if (!weatherResponse.ok) {
         const errorData = await weatherResponse.json().catch(() => ({}));
@@ -122,7 +123,7 @@ const useWeather = () => {
       
       // Now make prediction using the real weather data
       try {
-        const predictionResponse = await fetch('https://web-production-6d3e.up.railway.app/predict', {
+  const predictionResponse = await fetch(`${BASE}/predict`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
