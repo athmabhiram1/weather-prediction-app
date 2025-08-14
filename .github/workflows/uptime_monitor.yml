@@ -1,0 +1,36 @@
+name: Uptime monitor
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' # every 15 minutes
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Uptime check
+        env:
+          RAILWAY_URL: ${{ secrets.RAILWAY_URL }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          if [ -z "$RAILWAY_URL" ]; then echo "RAILWAY_URL secret not set"; exit 0; fi
+          echo "Checking $RAILWAY_URL/health"
+          resp=$(curl -sS "$RAILWAY_URL/health" || true)
+          python - <<'PY'
+import os, sys, json
+resp = sys.stdin.read()
+try:
+  d = json.loads(resp)
+  healthy = d.get('status') == 'healthy' and d.get('models_loaded')
+except:
+  healthy = False
+if not healthy:
+  msg = f"ALERT: Health check failed for {os.environ.get('RAILWAY_URL')} - response: {resp}"
+  print(msg)
+  webhook = os.environ.get('SLACK_WEBHOOK')
+  if webhook:
+    import requests
+    requests.post(webhook, json={'text': msg})
+else:
+  print('OK')
+PY

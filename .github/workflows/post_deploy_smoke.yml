@@ -1,0 +1,45 @@
+name: Post-deploy smoke tests
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  smoke:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Run health smoke test against Railway
+        env:
+          RAILWAY_URL: ${{ secrets.RAILWAY_URL }}
+        run: |
+          if [ -z "$RAILWAY_URL" ]; then echo "RAILWAY_URL secret not set"; exit 1; fi
+          echo "Pinging $RAILWAY_URL/health"
+          attempt=0
+          success=0
+          while [ $attempt -lt 6 ]; do
+            attempt=$((attempt+1))
+            echo "Attempt $attempt"
+            resp=$(curl -sS "$RAILWAY_URL/health" || true)
+            if [ -n "$resp" ]; then
+              python - <<'PY'
+import sys, json
+try:
+  d = json.loads(sys.stdin.read())
+  if d.get('status') == 'healthy' and d.get('models_loaded'):
+    print('OK')
+    sys.exit(0)
+except Exception as e:
+  pass
+sys.exit(1)
+PY
+              if [ $? -eq 0 ]; then success=1; echo "Smoke test passed"; break; fi
+            fi
+            sleep 5
+          done
+          if [ $success -ne 1 ]; then echo "Smoke test failed. Last response:"; echo "$resp"; exit 1; fi
