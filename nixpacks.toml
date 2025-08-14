@@ -1,0 +1,15 @@
+[phases.setup]
+nixpkgs = ['python310', 'pip']
+aptPkgs = ['python3-dev']
+
+[phases.install]
+cmds = [
+  'cd backend/api',
+  'pip install -r requirements.txt'
+]
+
+[phases.build]
+cmds = ['echo "Build phase completed"']
+
+[start]
+cmd = 'cd backend/api && python app.py'

@@ -1,4 +1,15 @@
 {
+  "name": "weather-prediction-monorepo",
+  "version": "1.0.0",
+  "description": "Weather prediction app with ML capabilities",
+  "scripts": {
+    "start": "cd backend/api && python app.py",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend/api && python app.py"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "react-slick": "^0.31.0",
     "slick-carousel": "^1.8.1"
