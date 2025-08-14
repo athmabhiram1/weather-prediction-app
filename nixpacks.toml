@@ -1,8 +1,19 @@
 [phases.setup]
-nixpkgs = ['python310']
+nixpkgs = ['python311', 'pip']
+aptPkgs = ['python3-dev', 'gcc', 'g++']
 
 [phases.install]
-cmds = ['pip install -r requirements.txt']
+cmds = [
+  'cd backend/api',
+  'pip install --upgrade pip',
+  'pip install -r requirements.txt'
+]
+
+[phases.build]
+cmds = ['echo "Build phase completed successfully"']
 
 [start]
-cmd = 'cd backend/api && python app.py'
+cmd = 'cd backend/api && gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 app:app'
+
+[variables]
+PYTHONPATH = '/app/backend'

@@ -16,6 +16,7 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.railway
 
 # IDE
 .vscode/
@@ -46,6 +47,9 @@ pids
 
 # Vercel
 .vercel
+
+# Railway
+.railway/
 
 # Model files (if large)
 *.model

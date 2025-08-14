@@ -201,5 +201,12 @@ def current_weather(city):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    
+    # Force debug to False in production
+    if os.environ.get('RAILWAY_ENVIRONMENT'):
+        debug_mode = False
+        
     logger.info(f"Starting Flask server on port {port} (debug={debug_mode})")
+    logger.info(f"Environment: {'Railway' if os.environ.get('RAILWAY_ENVIRONMENT') else 'Local'}")
+    
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
