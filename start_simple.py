@@ -24,12 +24,30 @@ if os.path.exists(api_path):
 
 # Import and run
 try:
+    # Try direct import first
     from app import app
+    print("✅ Successfully imported Flask app")
+except ImportError as e:
+    print(f"❌ Import error: {e}")
+    print("🔍 Trying alternative import methods...")
+    
+    # Try importing from current directory
+    try:
+        import app as app_module
+        app = app_module.app
+        print("✅ Successfully imported via app module")
+    except ImportError:
+        print("❌ Failed to import app")
+        print(f"📁 Current directory contents: {os.listdir('.')}")
+        print(f"🐍 Python path: {sys.path}")
+        sys.exit(1)
+
+try:
     port = int(os.environ.get('PORT', 5000))
-    print(f"Starting Flask app on port {port}")
+    print(f"🚀 Starting Flask app on port {port}")
     app.run(host='0.0.0.0', port=port, debug=False)
 except Exception as e:
-    print(f"Error: {e}")
+    print(f"💥 Error starting app: {e}")
     import traceback
     traceback.print_exc()
     sys.exit(1)
