@@ -1,0 +1,73 @@
+# nixpacks.toml
+
+# --- Variables ---
+[variables]
+# Specify the Python version for Nixpacks to use
+NIXPACKS_PYTHON_VERSION = "3.12"
+# Note: Setting NIXPACKS_PYTHON_VERSION might be redundant if you explicitly list
+# python312 in nixPkgs, but it's good practice.
+
+# --- Phases ---
+
+# 1. Setup Phase: Install Python and required libraries using Nix
+[phases.setup]
+# List of Nix packages to install.
+# These are installed declaratively by Nix, avoiding pip/ensurepip issues.
+# IMPORTANT: Use CORRECT Nix package names (often with hyphens, not underscores).
+nixPkgs = [
+  # Base Python interpreter (version determined by NIXPACKS_PYTHON_VERSION or explicitly by python312)
+  "python312",
+
+  # Flask Web Framework
+  "python312Packages.flask",
+
+  # Flask-CORS (Note the hyphen: flask-cors)
+  # This is the source of the previous error.
+  "python312Packages.flask-cors",
+
+  # WSGI HTTP Server (for production deployment)
+  "python312Packages.gunicorn",
+
+  # HTTP library
+  "python312Packages.requests",
+
+  # Data manipulation libraries
+  "python312Packages.numpy",
+  "python312Packages.pandas",
+
+  # Machine Learning libraries
+  "python312Packages.scikit-learn", # Note the hyphen
+  "python312Packages.xgboost",
+
+  # Utilities
+  "python312Packages.joblib", # For loading .gz files
+
+  # --- Optional: Build Tools ---
+  # Sometimes needed for compiling certain packages.
+  # "pkg-config",
+  # "gcc",
+]
+# Explanation:
+# - python312Packages.flask-cors (correct)
+# - python312Packages.scikit-learn (correct)
+# If you add more packages from requirements.txt, ensure you find their correct Nix names.
+# You can often search Nixpkgs documentation or use `nix search nixpkgs <term>` locally.
+
+# 2. Install Phase: Skip traditional pip install
+# Nix handles installation, so we don't run pip commands here.
+[phases.install]
+cmds = []
+# Explanation:
+# Running pip install here often fails in Nix environments due to the immutable /nix/store.
+# Dependencies should be declared in [phases.setup].nixPkgs.
+# If you have *non-Nix* packages, handling them is more complex and usually involves
+# Nix expressions (like python.withPackages) which is beyond basic nixpacks.toml.
+# For standard libraries like yours, Nix packages should suffice.
+
+# 3. Build Phase (Optional)
+# Add any build steps here if needed (e.g., asset compilation).
+# Usually not needed for pure Python/Flask apps.
+# [phases.build]
+# cmds = ["echo 'No build steps required'"]
+
+#
