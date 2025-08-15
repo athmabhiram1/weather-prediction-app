@@ -38,12 +38,12 @@ app.config.from_object(Config)
 # Load API key from environment variables as a fallback
 app.config['OPENWEATHER_API_KEY'] = os.getenv('OPENWEATHER_API_KEY', app.config.get('OPENWEATHER_API_KEY'))
 
-# Enable CORS for frontend integration using centralized config
-CORS(app, resources={
-    r"/*": {
-        "origins": app_config.get_cors_origins()
-    }
-})
+# --- Fix CORS: Explicitly allow frontend and localhost origins ---
+from flask_cors import CORS
+CORS(app, origins=[
+    "https://weather-prediction-app-wt9d.onrender.com",  # Your frontend URL
+    "http://localhost:3000",  # For local development
+])
 
 # Initialize predictor
 predictor = None
