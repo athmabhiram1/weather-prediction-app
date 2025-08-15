@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { buildApiUrl } from './config/config';
+import { buildApiUrl, getApiBaseUrl, validateAndLogConfig } from './config/config';
 import { 
   Cloud, 
   Sun, 
@@ -175,11 +175,13 @@ const useWeather = () => {
       
     } catch (err) {
       console.error('Weather fetch error:', err);
+      console.error('API Base URL being used:', getApiBaseUrl());
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch weather data';
       
       // Provide helpful error messages
-      if (errorMessage.includes('fetch')) {
-        setError('Unable to connect to weather service. Please check if the backend server is running on port 5000.');
+      if (errorMessage.includes('fetch') || errorMessage.includes('Failed to fetch')) {
+        const currentApiUrl = getApiBaseUrl();
+        setError(`Unable to connect to weather service at ${currentApiUrl}. Please check if the backend server is running and accessible.`);
       } else if (errorMessage.includes('not found')) {
         setError(errorMessage);
       } else {
@@ -869,6 +871,11 @@ const WeatherApp: React.FC = () => {
   const [location, setLocation] = useState('Mumbai');
   const [extendedView, setExtendedView] = useState(false);
   const { currentWeather, prediction, forecast, loading, error, fetchWeather } = useWeather();
+
+  // Validate and log configuration on app start
+  useEffect(() => {
+    validateAndLogConfig();
+  }, []);
 
   useEffect(() => {
     fetchWeather(location);
