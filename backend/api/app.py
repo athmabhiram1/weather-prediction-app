@@ -3,15 +3,16 @@ import os
 import warnings
 import logging
 from datetime import datetime
-warnings.filterwarnings("ignore", category=UndefinedMetricWarning)  # Using UndefinedMetricWarning instead
+# 1. Import the warning class FIRST
+from sklearn.exceptions import UndefinedMetricWarning
+# 2. THEN configure the warnings filter
+warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
+
 from dotenv import load_dotenv
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Configure warnings - CHANGED THIS LINE
-warnings.filterwarnings("ignore", category=UndefinedMetricWarning)  # Using UndefinedMetricWarning instead
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,10 +22,9 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(os.path.dirname(current_dir))
 sys.path.append(parent_dir)
 sys.path.append(os.path.dirname(current_dir))
+sys.path.append(current_dir) # Also add the current directory
 
-# Also add the current directory to handle relative imports
-sys.path.append(current_dir)
-
+# --- Import Flask and other components ---
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import Config
