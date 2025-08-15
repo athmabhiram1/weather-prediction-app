@@ -3,7 +3,7 @@ import os
 import warnings
 import logging
 from datetime import datetime
-from sklearn.exceptions import UndefinedMetricWarning  # Changed import
+warnings.filterwarnings("ignore", category=UndefinedMetricWarning)  # Using UndefinedMetricWarning instead
 from dotenv import load_dotenv
 
 # Configure logging
