@@ -219,6 +219,9 @@ if __name__ == '__main__':
         
     logger.info(f"Starting Flask server on port {port} (debug={debug_mode})")
     logger.info(f"Environment: {'Production' if app_config.is_production() else 'Development'}")
-    logger.info(f"CORS Origins: {app_config.get_cors_origins()}")
+    
+    # Log CORS origins for debugging
+    cors_origins = app_config.get_cors_origins()
+    logger.info(f"🌐 CORS Origins ({len(cors_origins)}): {cors_origins}")
     
     app.run(host=app_config.HOST, port=port, debug=debug_mode)
