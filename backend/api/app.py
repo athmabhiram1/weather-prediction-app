@@ -28,6 +28,7 @@ sys.path.append(current_dir) # Also add the current directory
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import Config
+from app_config import config as app_config
 from utils.predictor import WeatherPredictor
 
 # Initialize Flask app
@@ -37,24 +38,10 @@ app.config.from_object(Config)
 # Load API key from environment variables as a fallback
 app.config['OPENWEATHER_API_KEY'] = os.getenv('OPENWEATHER_API_KEY', app.config.get('OPENWEATHER_API_KEY'))
 
-# Enable CORS for frontend integration
-# Allow origins to be extended via FRONTEND_URL environment variable (useful on Render)
-frontend_url = os.getenv('FRONTEND_URL')
-default_origins = [
-    "http://localhost:3000",
-    "https://your-vercel-app.vercel.app",
-    "https://weatherai-yourusername.vercel.app",
-    "https://web-production-6d3e.up.railway.app"
-]
-if frontend_url:
-    # ensure no duplicate and strip trailing slash
-    frontend_url = frontend_url.rstrip('/')
-    if frontend_url not in default_origins:
-        default_origins.append(frontend_url)
-
+# Enable CORS for frontend integration using centralized config
 CORS(app, resources={
     r"/*": {
-        "origins": default_origins
+        "origins": app_config.get_cors_origins()
     }
 })
 
@@ -217,14 +204,21 @@ def current_weather(city):
 
 # --- Main Execution ---
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    # Validate configuration and show warnings
+    warnings = app_config.validate_config()
+    if warnings:
+        for warning in warnings:
+            logger.warning(f"⚠️  {warning}")
+    
+    port = app_config.PORT
+    debug_mode = app_config.FLASK_DEBUG
     
     # Force debug to False in production
-    if os.environ.get('RAILWAY_ENVIRONMENT'):
+    if app_config.is_production():
         debug_mode = False
         
     logger.info(f"Starting Flask server on port {port} (debug={debug_mode})")
-    logger.info(f"Environment: {'Railway' if os.environ.get('RAILWAY_ENVIRONMENT') else 'Local'}")
+    logger.info(f"Environment: {'Production' if app_config.is_production() else 'Development'}")
+    logger.info(f"CORS Origins: {app_config.get_cors_origins()}")
     
-    app.run(host='0.0.0.0', port=port, debug=debug_mode)
+    app.run(host=app_config.HOST, port=port, debug=debug_mode)

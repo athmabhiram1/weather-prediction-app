@@ -1,32 +1,17 @@
 services:
   - type: web
-    name: weather-frontend
-    env: node
-    branch: main
-    region: oregon
-    autoDeploy: true
-    plan: free
-    buildCommand: "cd frontend && npm install && npm run build"
-    startCommand: "cd frontend && npm run start -- -p $PORT"
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: NEXT_PUBLIC_API_BASE_URL
-        value: "https://weather-prediction-app-backend.onrender.com"
-
-  - type: web
-    name: weather-prediction-app-backend
+    name: weather-prediction-app-1
     env: python
     branch: main
     region: oregon
     autoDeploy: true
     plan: free
     buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
-    startCommand: "bash start.sh"
+    startCommand: "cd backend/api && gunicorn app:app --bind 0.0.0.0:$PORT"
     envVars:
       - key: PORT
         value: "10000"
       - key: FLASK_ENV
         value: production
-      - key: FRONTEND_URL
-        value: "https://weather-prediction-app.onrender.com"
+      - key: PYTHONPATH
+        value: "/opt/render/project/src:/opt/render/project/src/backend"

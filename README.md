@@ -42,8 +42,21 @@ python app.py
 ```
 
 **Environment Variables:**
-- Frontend: `NEXT_PUBLIC_API_BASE_URL=http://localhost:5000`
-- Backend: `OPENWEATHER_API_KEY=your_api_key` and `SECRET_KEY=your_secret_key`
+
+**Frontend (.env.local):**
+```env
+NEXT_PUBLIC_API_BASE_URL=https://your-backend-api.com
+NEXT_PUBLIC_API_BASE_URL_FALLBACK=http://localhost:5000
+```
+
+**Backend (.env):**
+```env
+OPENWEATHER_API_KEY=your_api_key
+SECRET_KEY=your_secret_key
+FRONTEND_URL=https://your-frontend-domain.com
+LOCALHOST_FRONTEND_URL=http://localhost:3000
+ADDITIONAL_CORS_ORIGINS=https://staging.yourdomain.com,https://another-domain.com
+```
 
 📡 API Endpoints
 - `GET /health` - Health check
