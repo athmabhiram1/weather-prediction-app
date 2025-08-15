@@ -4,7 +4,7 @@ import os
 import warnings
 import logging
 from datetime import datetime  # Added back - needed for health_check
-from sklearn.exceptions import InconsistentVersionWarning
+from sklearn.exceptions import UndefinedMetricWarning
 from dotenv import load_dotenv
 
 # Configure logging
