@@ -1,18 +1,17 @@
-# backend/api/app.py
 import sys
 import os
 import warnings
 import logging
-from datetime import datetime  # Added back - needed for health_check
-from sklearn.exceptions import UndefinedMetricWarning
+from datetime import datetime
+from sklearn.exceptions import UndefinedMetricWarning  # Changed import
 from dotenv import load_dotenv
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Configure warnings
-warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
+# Configure warnings - CHANGED THIS LINE
+warnings.filterwarnings("ignore", category=UndefinedMetricWarning)  # Using UndefinedMetricWarning instead
 
 # Load environment variables from .env file
 load_dotenv()
